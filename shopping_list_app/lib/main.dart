@@ -30,9 +30,9 @@ class _NavigationWidgetState extends State<NavigationWidget> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     ShoppingListPage(),
-    Text(
+    const Text(
       'Index 1: Business',
       style: optionStyle,
     )
