@@ -20,7 +20,6 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     setState(() {
       foodItems.add(ShoppingItem(textc.text));
       textc.clear();
-      FocusScope.of(context).unfocus();
     });
   }
 
@@ -45,8 +44,17 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
           ),
         ),
         Expanded(
-          child: ListView(
-            children: [for (ShoppingItem x in foodItems) x],
+          child: ListView.builder(
+            itemCount: foodItems.length,
+            itemBuilder: (context, index) {
+              final food = foodItems[index];
+              return Dismissible(
+                  key: UniqueKey(),
+                  child: foodItems[index],
+                  onDismissed: (direction) => setState(() {
+                        foodItems.removeAt(index);
+                      }));
+            },
           ),
         ),
         TextField(
