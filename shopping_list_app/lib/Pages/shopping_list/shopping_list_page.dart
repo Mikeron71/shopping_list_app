@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 
 class ShoppingListPage extends StatefulWidget {
   const ShoppingListPage({super.key});
@@ -14,7 +11,6 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // modifier la fonction button
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             print("button pressed");
@@ -22,8 +18,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
           label: const Text("Add an item"),
         ),
         body: Column(
-          children: const <Widget>[
-            Padding(
+          children: <Widget>[
+            const Padding(
               padding: EdgeInsets.all(20.0),
               child: Center(
                 child: Text(
@@ -32,16 +28,34 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 ),
               ),
             ),
+            ShoppingItem("Patate"),
+            ShoppingItem("Pizza"),
+            ShoppingItem("Pain"),
           ],
         ));
   }
 }
 
-class AddItemButton extends StatelessWidget {
-  const AddItemButton({super.key});
+class ShoppingItem extends StatefulWidget {
+  late String itemName;
+
+  ShoppingItem(this.itemName, {super.key});
 
   @override
+  State<ShoppingItem> createState() => _ShoppingItemState();
+}
+
+class _ShoppingItemState extends State<ShoppingItem> {
+  bool _coche = false;
+  @override
   Widget build(BuildContext context) {
-    return Container();
+    return CheckboxListTile(
+        value: _coche,
+        title: Text(widget.itemName),
+        onChanged: (bool? value) {
+          setState(() {
+            _coche = !_coche;
+          });
+        });
   }
 }
