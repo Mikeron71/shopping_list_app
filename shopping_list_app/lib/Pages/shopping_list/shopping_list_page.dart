@@ -17,37 +17,25 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   final textc = TextEditingController();
 
   addToList() {
-    setState(() {
-      foodItems.add(ShoppingItem(textc.text));
-      textc.clear();
-    });
+    if (textc.text != "") {
+      setState(() {
+        foodItems.add(ShoppingItem(textc.text));
+        textc.clear();
+        FocusScope.of(context).unfocus();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // floatingActionButton: FloatingActionButton.extended(
-        //   onPressed: () {
-        //     foodItems.add(ShoppingItem("test"));
-        //   },
-        //   label: const Text("Add an item"),
-        // ),
         body: Column(
       children: <Widget>[
-        const Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Center(
-            child: Text(
-              'Shopping List',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
+        TopBanner(foodItems),
         Expanded(
           child: ListView.builder(
             itemCount: foodItems.length,
             itemBuilder: (context, index) {
-              final food = foodItems[index];
               return Dismissible(
                   key: UniqueKey(),
                   child: foodItems[index],
@@ -60,7 +48,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         TextField(
           controller: textc,
           decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               hintText: 'Add an item',
               suffixIcon: IconButton(
                   onPressed: () {
@@ -86,13 +74,61 @@ class _ShoppingItemState extends State<ShoppingItem> {
   bool _coche = false;
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-        value: _coche,
-        title: Text(widget.itemName),
-        onChanged: (bool? value) {
-          setState(() {
-            _coche = !_coche;
-          });
-        });
+    return Card(
+      color: Color.fromARGB(255, 187, 246, 189),
+      child: CheckboxListTile(
+          value: _coche,
+          title: Text(widget.itemName),
+          onChanged: (bool? value) {
+            setState(() {
+              _coche = !_coche;
+            });
+          }),
+    );
+  }
+}
+
+enum SampleItem { itemOne, itemTwo, itemThree }
+
+class TopBanner extends StatefulWidget {
+  TopBanner(List<ShoppingItem> sl, {super.key});
+
+  @override
+  State<TopBanner> createState() => _TopBannerState();
+}
+
+class _TopBannerState extends State<TopBanner> {
+  SampleItem? selectedMenu;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        const Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 32.0),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: PopupMenuButton<SampleItem>(
+            initialValue: selectedMenu,
+            // Callback that sets the selected popup menu item.
+            onSelected: (SampleItem item) {
+              setState(() {
+                selectedMenu = item;
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
+              PopupMenuItem<SampleItem>(
+                value: SampleItem.itemOne,
+                child: Text('Delete all'),
+                onTap: () => {},
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 }
