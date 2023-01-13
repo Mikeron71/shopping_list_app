@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list_app/Pages/shopping_list/top_banner.dart';
 
 class ShoppingListPage extends StatefulWidget {
   ShoppingListPage({super.key});
@@ -31,7 +32,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     return Scaffold(
         body: Column(
       children: <Widget>[
-        TopBanner(foodItems),
+        TopBanner(),
         Expanded(
           child: ListView.builder(
             itemCount: foodItems.length,
@@ -62,9 +63,9 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
 }
 
 class ShoppingItem extends StatefulWidget {
-  late String itemName;
+  final String itemName;
 
-  ShoppingItem(this.itemName, {super.key});
+  const ShoppingItem(this.itemName, {super.key});
 
   @override
   State<ShoppingItem> createState() => _ShoppingItemState();
@@ -75,7 +76,7 @@ class _ShoppingItemState extends State<ShoppingItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 187, 246, 189),
+      color: const Color.fromARGB(255, 187, 246, 189),
       child: CheckboxListTile(
           value: _coche,
           title: Text(widget.itemName),
@@ -84,51 +85,6 @@ class _ShoppingItemState extends State<ShoppingItem> {
               _coche = !_coche;
             });
           }),
-    );
-  }
-}
-
-enum SampleItem { itemOne, itemTwo, itemThree }
-
-class TopBanner extends StatefulWidget {
-  TopBanner(List<ShoppingItem> sl, {super.key});
-
-  @override
-  State<TopBanner> createState() => _TopBannerState();
-}
-
-class _TopBannerState extends State<TopBanner> {
-  SampleItem? selectedMenu;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        const Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(left: 32.0),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: PopupMenuButton<SampleItem>(
-            initialValue: selectedMenu,
-            // Callback that sets the selected popup menu item.
-            onSelected: (SampleItem item) {
-              setState(() {
-                selectedMenu = item;
-              });
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
-              PopupMenuItem<SampleItem>(
-                value: SampleItem.itemOne,
-                child: Text('Delete all'),
-                onTap: () => {},
-              ),
-            ],
-          ),
-        )
-      ],
     );
   }
 }
