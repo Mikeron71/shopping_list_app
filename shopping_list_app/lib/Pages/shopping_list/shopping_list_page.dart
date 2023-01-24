@@ -4,7 +4,7 @@ import 'package:shopping_list_app/Pages/shopping_list/top_banner.dart';
 import 'package:shopping_list_app/providers/item_list_provider.dart';
 
 class ShoppingListPage extends StatefulWidget {
-  ShoppingListPage({super.key});
+  const ShoppingListPage({super.key});
 
   @override
   State<ShoppingListPage> createState() => _ShoppingListPageState();
@@ -32,22 +32,28 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 children: <Widget>[
                   const TopBanner(),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: context.watch<ItemList>().foodItems.length,
-                      itemBuilder: (context, index) {
-                        final item = context.watch<ItemList>().foodItems[index];
-                        return Dismissible(
-                          key: Key(item.itemName),
-                          onDismissed: (direction) {
-                            setState(() {
-                              context.read<ItemList>().removeItem(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("${item.itemName} deleted")));
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Consumer<ItemList>(
+                        builder: (context, foodlist, _) => ListView.builder(
+                          itemCount: foodlist.foodItems.length,
+                          itemBuilder: (context, index) {
+                            final item = foodlist.foodItems[index];
+                            return Dismissible(
+                              key: Key(item.itemName),
+                              onDismissed: (direction) {
+                                foodlist.removeItem(index);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("${item.itemName} deleted"),
+                                  ),
+                                );
+                              },
+                              child: ShoppingItem(item),
+                            );
                           },
-                          child: item,
-                        );
-                      },
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -76,10 +82,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
 }
 
 class ShoppingItem extends StatefulWidget {
-  final String itemName;
-  bool? _coche;
-
-  ShoppingItem(this.itemName, this._coche, {super.key});
+  final FoodItem foodItem;
+  const ShoppingItem(this.foodItem, {super.key});
 
   @override
   State<ShoppingItem> createState() => _ShoppingItemState();
@@ -89,14 +93,13 @@ class _ShoppingItemState extends State<ShoppingItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
       child: CheckboxListTile(
-          value: widget._coche,
-          title: Text(widget.itemName),
+          value: widget.foodItem.checked,
+          title: Text(widget.foodItem.itemName),
           activeColor: Colors.redAccent,
           onChanged: (bool? newValue) {
             setState(() {
-              widget._coche = newValue;
+              widget.foodItem.checked = newValue!;
             });
           }),
     );

@@ -1,14 +1,11 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
-import '../Pages/shopping_list/shopping_list_page.dart';
-
 class ItemList with ChangeNotifier {
-  List<ShoppingItem> foodItems = [
-    ShoppingItem("Patate", false),
-    ShoppingItem("Pizza", false),
-    ShoppingItem("Pain", false),
+  List<FoodItem> foodItems = [
+    FoodItem("Bread", false),
+    FoodItem("Coucou francis :)", false),
+    FoodItem("Pizza", false),
+    FoodItem("Potato", false),
   ];
 
   void removeItem(index) {
@@ -18,7 +15,7 @@ class ItemList with ChangeNotifier {
 
   void addItem(String s) {
     if (s != "" && s.length > 2) {
-      foodItems.add(ShoppingItem(s, false));
+      foodItems.add(FoodItem(s, false));
       foodItems.sort((a, b) =>
           a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
       notifyListeners();
@@ -29,4 +26,11 @@ class ItemList with ChangeNotifier {
     foodItems.clear();
     notifyListeners();
   }
+}
+
+class FoodItem {
+  final String itemName;
+  bool checked;
+
+  FoodItem(this.itemName, this.checked);
 }
