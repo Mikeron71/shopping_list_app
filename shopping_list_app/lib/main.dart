@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list_app/Pages/shopping_list/shopping_list_page.dart';
-
-import 'navigation_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_list_app/providers/item_list_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: ((_) => ItemList()))],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,9 +16,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: _title,
-      home: NavigationWidget(),
+      home: ShoppingListPage(),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import "package:provider/provider.dart";
+import 'package:shopping_list_app/providers/item_list_provider.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -24,6 +26,10 @@ class _TopBannerState extends State<TopBanner> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: PopupMenuButton<SampleItem>(
+            icon: (const Icon(
+              Icons.more_vert_rounded,
+              color: Colors.redAccent,
+            )),
             initialValue: selectedMenu,
             // Callback that sets the selected popup menu item.
             onSelected: (SampleItem item) {
@@ -35,7 +41,7 @@ class _TopBannerState extends State<TopBanner> {
               PopupMenuItem<SampleItem>(
                 value: SampleItem.itemOne,
                 child: const Text('Delete all'),
-                onTap: () => {},
+                onTap: () => {context.read<ItemList>().clearItems()},
               ),
             ],
           ),

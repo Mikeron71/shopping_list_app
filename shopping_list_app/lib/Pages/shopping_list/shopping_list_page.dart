@@ -1,7 +1,7 @@
-import 'dart:developer';
-
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_list_app/Pages/shopping_list/top_banner.dart';
+import 'package:shopping_list_app/providers/item_list_provider.dart';
 
 class ShoppingListPage extends StatefulWidget {
   ShoppingListPage({super.key});
@@ -11,79 +11,67 @@ class ShoppingListPage extends StatefulWidget {
 }
 
 class _ShoppingListPageState extends State<ShoppingListPage> {
-  List<ShoppingItem> foodItems = [
-    ShoppingItem("Patate", false),
-    ShoppingItem("Pizza", false),
-    ShoppingItem("Pain", false)
-  ];
-
   final textc = TextEditingController();
-
-  addToList() {
-    if (textc.text != "") {
-      setState(() {
-        foodItems.add(ShoppingItem(textc.text, false));
-        textc.clear();
-        FocusScope.of(context).unfocus();
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Center(child: Text('Shop-It')),
+          backgroundColor: Colors.redAccent,
+        ),
         body: Stack(
-      children: [
-        Image.asset("assets/images/food.png",
-            fit: BoxFit.fill, height: double.infinity, width: double.infinity),
-        Column(
-          children: <Widget>[
-            const TopBanner(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: foodItems.length,
-                itemBuilder: (context, index) {
-                  final item = foodItems[index];
-                  return Dismissible(
-                    // Each Dismissible must contain a Key. Keys allow Flutter to
-                    // uniquely identify widgets.
-                    key: Key(item.itemName),
-                    // Provide a function that tells the app
-                    // what to do after an item has been swiped away.
-                    onDismissed: (direction) {
-                      // Remove the item from the data source.
-                      setState(() {
-                        foodItems.removeAt(index);
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${item.itemName} deleted")));
-                    },
-                    child: item,
-                  );
-                },
-              ),
-            ),
+          children: [
+            Image.asset("assets/images/food.png",
+                fit: BoxFit.fill,
+                height: double.infinity,
+                width: double.infinity),
             Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: TextField(
-                controller: textc,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Add an item',
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          addToList();
-                        },
-                        icon: const Icon(Icons.add))),
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                children: <Widget>[
+                  const TopBanner(),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: context.watch<ItemList>().foodItems.length,
+                      itemBuilder: (context, index) {
+                        final item = context.watch<ItemList>().foodItems[index];
+                        return Dismissible(
+                          key: Key(item.itemName),
+                          onDismissed: (direction) {
+                            setState(() {
+                              context.read<ItemList>().removeItem(index);
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("${item.itemName} deleted")));
+                          },
+                          child: item,
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: TextField(
+                      controller: textc,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Add an item',
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                context.read<ItemList>().addItem(textc.text);
+                                textc.clear();
+                              },
+                              icon: const Icon(Icons.add))),
+                    ),
+                  ),
+                ],
               ),
-            ),
+            )
           ],
-        )
-      ],
-    ));
+        ));
   }
 }
 
@@ -105,6 +93,7 @@ class _ShoppingItemState extends State<ShoppingItem> {
       child: CheckboxListTile(
           value: widget._coche,
           title: Text(widget.itemName),
+          activeColor: Colors.redAccent,
           onChanged: (bool? newValue) {
             setState(() {
               widget._coche = newValue;
